@@ -1,0 +1,8 @@
+{
+    "cmake.environment": {
+        "PATH": "${cmake.launchTargetDirectory};${env:PATH}"
+    },
+    "cmake.debugConfig": {
+        "console": "integratedTerminal"
+    }
+}

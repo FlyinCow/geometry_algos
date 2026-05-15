@@ -1,0 +1,55 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 15,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_CXX_STANDARD": "23"
+            }
+        },
+        {
+            "name": "ninja-msvc",
+            "displayName": "Ninja + MSVC",
+            "inherits": "base",
+            "description": "Configure using Ninja generator and the Windows MSVC toolchain from the cloned repo.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/msvc",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/Windows.MSVC.toolchain.cmake"
+            }
+        },
+        {
+            "name": "ninja-clang",
+            "inherits": "base",
+            "displayName": "Ninja + Clang",
+            "description": "Configure using Ninja generator and the Windows Clang toolchain from the cloned repo.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/clang",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/Windows.Clang.toolchain.cmake"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "build-msvc",
+            "displayName": "Build (MSVC)",
+            "configurePreset": "ninja-msvc",
+            "description": "Build using the ninja-msvc configure preset."
+        },
+        {
+            "name": "build-clang",
+            "displayName": "Build (Clang)",
+            "configurePreset": "ninja-clang",
+            "description": "Build using the ninja-clang configure preset."
+        }
+    ]
+}
