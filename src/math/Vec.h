@@ -179,8 +179,14 @@ public:
         return std::abs(self.dot(other)) <= eps;
     }
 
-    constexpr bool is_zero(T eps) {
-        return this->square_distance_to({}) <= eps * eps;
+    constexpr bool is_zero(this const Vec &self, T eps) {
+        return self.square_norm() <= eps * eps;
+    }
+
+    constexpr bool is_linear_related_to(this const Vec &self, const Vec &other, T delta_theta) noexcept {
+        auto product = self.dot(other);
+        auto squred_norm_product = self.square_norm() * other.square_norm();
+        return product * product >= (1 - delta_theta * delta_theta) * squred_norm_product;
     }
 
 private:
@@ -192,20 +198,27 @@ using Vec3f = Vec<3, float>;
 using Vec2d = Vec<2>;
 using Vec2f = Vec<2, float>;
 
-template <size_t Dim, class T>
+template <size_t Dim, std::floating_point T = double>
 T squared_distance(const Vec<Dim, T> &a, const Vec<Dim, T> &b) noexcept {
     return (b - a).square_norm();
 }
 
-template <size_t Dim, class T>
+template <size_t Dim, std::floating_point T = double>
 T distance(const Vec<Dim, T> &a, const Vec<Dim, T> &b) noexcept {
     return (b - a).norm();
 }
 
-template <size_t Dim, class T>
+template <size_t Dim, std::floating_point T = double>
 bool is_orthogonal(const Vec<Dim, T> &a, const Vec<Dim, T> &b, T eps) noexcept {
     return std::abs(a.dot(b)) <= eps;
     // return a.is_orthogonal_to(b, eps);
+}
+
+template <size_t Dim, std::floating_point T = double>
+bool is_linear_related(const Vec<Dim, T> &a, const Vec<Dim, T> &b, T eps) noexcept {
+    auto product = a.dot(b);
+    auto squred_norm_product = a.square_norm() * b.square_norm();
+    return product * product >= (1 - eps * eps) * squred_norm_product;
 }
 
 // [TODO]: linear relative
@@ -263,10 +276,17 @@ struct std::formatter<ga::Vec<Dim, T>> {
         std::format_context::iterator out = ctx.out();
 
         switch (bracket) {
-        case BracketType::Parenthesis: out = std::format_to(out, "(");  break;
-        case BracketType::Square:      out = std::format_to(out, "[");  break;
-        case BracketType::Curly:       out = std::format_to(out, "{{"); break;
-        case BracketType::None:        break;
+        case BracketType::Parenthesis:
+            out = std::format_to(out, "(");
+            break;
+        case BracketType::Square:
+            out = std::format_to(out, "[");
+            break;
+        case BracketType::Curly:
+            out = std::format_to(out, "{{");
+            break;
+        case BracketType::None:
+            break;
         }
 
         const std::string_view separator = sep == SepType::Comma ? ", " : " ";
@@ -277,10 +297,17 @@ struct std::formatter<ga::Vec<Dim, T>> {
         }
 
         switch (bracket) {
-        case BracketType::Parenthesis: out = std::format_to(out, ")");  break;
-        case BracketType::Square:      out = std::format_to(out, "]");  break;
-        case BracketType::Curly:       out = std::format_to(out, "}}"); break;
-        case BracketType::None:        break;
+        case BracketType::Parenthesis:
+            out = std::format_to(out, ")");
+            break;
+        case BracketType::Square:
+            out = std::format_to(out, "]");
+            break;
+        case BracketType::Curly:
+            out = std::format_to(out, "}}");
+            break;
+        case BracketType::None:
+            break;
         }
 
         return out;

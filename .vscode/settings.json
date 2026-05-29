@@ -3,6 +3,7 @@
         "PATH": "${cmake.launchTargetDirectory};${env:PATH}"
     },
     "cmake.debugConfig": {
-        "console": "integratedTerminal"
+        "console": "integratedTerminal",
+        "visualizerFile":"${workspaceRoot}/types.natvis"
     }
 }
