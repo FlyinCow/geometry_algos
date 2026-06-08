@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="Data">
+        <DisplayString>size = {size}</DisplayString>
+        <Expand>
+            <Synthetic Name="Zap">
+                <DisplayString>{size}</DisplayString>
+                <Expand>
+                    <CustomListItems>
+                        <Variable Name="i" InitialValue="0" />
+                        <Variable Name="data" InitialValue="0" />
+                        <Size>size</Size>
+                        <Loop>
+                            <If Condition="i != size">
+                                <Item>*(a+$i)</Item>
+                                <Exec>i = i + 1</Exec>
+                            </If>
+                        </Loop>
+                    </CustomListItems>
+                </Expand>
+            </Synthetic>
+        </Expand>
+    </Type>
+</AutoVisualizer>
